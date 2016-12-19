@@ -24,7 +24,7 @@ typedef struct						s_string
 ** Get the string of the structure.
 */
 
-# define STRING(str)				(CONTAINEROF((char **)str, t_string, str))
+# define STRING(x)					(CONTAINEROF((char **)x, t_string, str))
 
 /*
 ** Initiate a new string.
@@ -43,5 +43,11 @@ char								*string_join(char *str, char *add);
 */
 
 char								*string_dup(char *str);
+
+/*
+** Delete a string.
+*/
+
+char								*string_del(char *str);
 
 #endif

@@ -2,7 +2,7 @@ TARGET_EXEC ?= libstring.a
 
 BUILD_DIR ?= ./build
 SRC_DIRS ?= ./srcs
-INC_DIRS ?= ./includes
+INC_DIR ?= ./includes
 
 SRCS := $(shell find $(SRC_DIRS) -name *.cpp -or -name *.c -or -name *.s)
 OBJS := $(SRCS:%=$(BUILD_DIR)/%.o)
@@ -17,7 +17,7 @@ CPPFLAGS ?= $(INC_FLAGS) -MMD -MP -Wall -Werror -Wextra
 # Libraries (-lfoo) should be added to the LDLIBS variable instead.
 # LDFLAGS ?= 
 
-all = $(TARGET_EXEC) $(OBJS)
+all: $(TARGET_EXEC) $(OBJS)
 
 $(TARGET_EXEC): $(OBJS)
 	ar rc $(TARGET_EXEC) $(OBJS)
