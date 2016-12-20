@@ -1,7 +1,7 @@
 #include "string.h"
 #include "string_private.h"
 
-char			*string_join(char *str, char *add)
+char			*string_cat(char *str, char *add)
 {
 	char *tmp;
 

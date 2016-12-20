@@ -33,10 +33,10 @@ typedef struct						s_string
 char								*string_new(char *str);
 
 /*
-** Join a string.
+** Concatenate a string.
 */
 
-char								*string_join(char *str, char *add);
+char								*string_cat(char *str, char *add);
 
 /*
 ** Dup an existing string.
