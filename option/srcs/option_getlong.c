@@ -36,6 +36,7 @@ typedef struct          s_option_data
     const char          *optstring;
     t_option_info       *longopts;
     int                 long_only;
+    int                 *longind;
 
     int                 optind;
     int                 opterr;
@@ -214,7 +215,7 @@ int ft_strcmp(char *p1, char *p2)
     while ((unsigned char)*p1 == (unsigned char)*p2)
     {
         if ((unsigned char)*p1 == '\0')
-            return ((unsigned char)p1 - (unsigned char)p2);
+            return ((unsigned char)*p1 - (unsigned char)*p2);
         ++p1;
         ++p2;
     }
@@ -254,7 +255,7 @@ int ft_strncmp(const char *p1, const char *p2, int size)
     while ((unsigned char)*p1 == (unsigned char)*p2 && --size)
     {
         if ((unsigned char)*p1 == '\0')
-            return ((unsigned char)p1 - (unsigned char)p2);
+            return ((unsigned char)*p1 - (unsigned char)*p2);
         ++p1;
         ++p2;
     }
@@ -461,7 +462,7 @@ int __option_treat_longoption_get_namelen(t_treat_longoption *info, t_option_dat
     return (nameend - d->__nextchar);
 }
 
-int __option_treat_longoption_test_match_exact_match(t_treat_longoption *info, t_option_data *d)
+void __option_treat_longoption_test_match_exact_match(t_treat_longoption *info, t_option_data *d)
 {
     info->pfound = info->p;
     info->indfound = info->option_index;
@@ -518,7 +519,7 @@ void __option_treat_longoption_test_match(t_treat_longoption *info, t_option_dat
 
 /*-----------------------------------------------------------------*/
 
-int __option_treat_longoption_ambiguous(char **argv, t_treat_longoption *info, t_option_data *d, int *ret)
+int __option_treat_longoption_ambiguous(char **argv, t_treat_longoption *info, t_option_data *d)
 {
     struct option_list first;
 
@@ -539,50 +540,220 @@ int __option_treat_longoption_ambiguous(char **argv, t_treat_longoption *info, t
     d->__nextchar += ft_strlen(d->__nextchar);
     d->optind++;
     d->optopt = 0;
-    return ((*ret = '?'));
+    return ('?');
 }
 
 /*-----------------------------------------------------------------*/
 
-int __option_treat_longoption_arguments(char **argv, t_treat_longoption *info, t_option_data *d, int *ret)
+int __option_treat_longoption_arguments_required(t_arguments *args, t_treat_longoption *info, t_option_data *d)
 {
-    
+    if (d->optind < args->argc)
+        d->optarg = args->argv[d->optind++];
+    else
+    {
+        if (d->opterr)
+        {
+            ft_fdprint(2, "%s: option '--%s' requires an argument\n",
+                args->argv[0], info->pfound->name);
+        }
+        d->__nextchar += ft_strlen (d->__nextchar);
+        d->optopt = info->pfound->val;
+        return (d->optstring[0] == ':' ? ':' : '?');
+    }
+    return (0);
+}
+
+int __option_treat_longoption_arguments_dont(t_arguments *args, t_treat_longoption *info, t_option_data *d)
+{
+    if (info->pfound->has_arg)
+        d->optarg = info->nameend +1;
+    else
+    {
+        if (d->opterr)
+        {
+            if (args->argv[d->optind - 1][1] == '-')
+                ft_fdprint(2, "%s: option '--%s' doesn't allow an argument\n",
+                    args->argv[0], info->pfound->name);
+            else
+                ft_fdprint(2, "%s: option '%c%s' doesn't allow an argument\n",
+                    args->argv[0], args->argv[d->optind - 1][0], info->pfound->name);
+        }
+        d->__nextchar += ft_strlen(d->__nextchar);
+        d->optopt = info->pfound->val;
+        return ('?');
+    }
+    return (0);
+}
+
+int __option_treat_longoption_arguments(t_arguments *args, t_treat_longoption *info, t_option_data *d)
+{
+    int ret;
+
+    info->option_index = info->indfound;
+    d->optind++;
+    if (*info->nameend)
+    {
+        if (0 != (ret = __option_treat_longoption_arguments_dont(args, info, d)))
+            return (ret);
+    }
+    else if (1 == info->pfound->has_arg)
+    {
+        if (0 != (ret = __option_treat_longoption_arguments_required(args, info, d)))
+            return (ret);
+    }
+    d->__nextchar += ft_strlen(d->__nextchar);
+    if (d->longind != 0)
+        *d->longind = info->option_index;
+    if (info->pfound->flag)
+    {
+        *(info->pfound->flag) = info->pfound->val;
+        return (0);
+    }
+    return (info->pfound->val);
 }
 
 /*-----------------------------------------------------------------*/
 
-int __option_treat_longoption(int argc, char **argv, t_option_data *d, int *ret)
+/*
+** Can't find it as a long option.  If this is not getopt_long_only,
+** or the option starts with '--' or is not a valid short
+** option, then it's an error.
+** Otherwise interpret it as a short option.
+*/
+
+int __option_treat_longoption_unrecognized(char **argv, t_treat_longoption *info, t_option_data *d)
+{
+    if (d->opterr)
+    {
+        if (argv[d->optind][1] == '-')
+            ft_fdprint(2, "%s: unrecognized option '--%s'\n",
+                argv[0], d->__nextchar);
+        else
+            ft_fdprint(2, "%s: unrecognized option '%c%s'\n",
+                argv[0], argv[d->optind][0], d->__nextchar);
+    }
+    d->__nextchar = (char *) "";
+    d->optind++;
+    d->optopt = 0;
+    return ('?');
+}
+
+/*-----------------------------------------------------------------*/
+
+int __option_treat_longoption(int argc, char **argv, t_option_data *d)
 {
     t_treat_longoption info;
 
     info = (t_treat_longoption){0, 0, 0, 0, 0, 0, 0, 0};
-    if (d->longopts != 0
-        && (argv[d->optind][1] == '-'
-        || (d->long_only && (argv[d->optind][2]
-            || !ft_strchr(d->optstring, argv[d->optind][1])))))
+    info.namelen = __option_treat_longoption_get_namelen(&info, d);
+    __option_treat_longoption_test_match(&info, d);
+    if (info.ambig_list != 0 && !info.exact)
+        return (__option_treat_longoption_ambiguous(argv, &info, d));
+    if (info.pfound != 0)
+        return (__option_treat_longoption_arguments(&(t_arguments){argc, argv, 0}, &info, d));
+    if (!d->long_only || argv[d->optind][1] == '-'
+        || ft_strchr (d->optstring, *d->__nextchar) == 0)
+        return (__option_treat_longoption_unrecognized(argv, &info, d));
+}
+
+/*-----------------------------------------------------------------*/
+
+/*
+** This is an option that accepts an argument optionally.
+*/
+
+void __option_treat_shortoption_arguments_optionnal(t_option_data *d)
+{
+    if (*d->__nextchar != '\0')
     {
-        info.namelen = __option_treat_longoption_get_namelen(&info, d);
-        __option_treat_longoption_test_match(&info, d);
-        if (info.ambig_list != 0 && !info.exact)
-            return (__option_treat_longoption_ambiguous(argv, &info, d, ret));
-        if (info.pfound != 0)
-            return (__option_treat_longoption_arguments(argv, &info, d, ret));
+        d->optarg = d->__nextchar;
+        d->optind++;
     }
-    return (0);
+    else
+        d->optarg = 0;
+    d->__nextchar = 0;
+}
+
+/*
+** This is an option that requires an argument.  
+** If we end this ARGV-element by taking the rest as an arg,
+** we must advance to the next element now.  
+** We already incremented `optind' once;
+** increment it again when taking next ARGV-elt as argument.  
+*/
+
+int __option_treat_shortoption_arguments_required(t_arguments *args, t_option_data *d, char c)
+{
+    if (*d->__nextchar != '\0')
+    {
+        d->optarg = d->__nextchar;
+        d->optind++;
+    }
+    else if (d->optind == args->argc)
+    {
+        if (d->opterr)
+            ft_fdprint(2, "%s: option requires an argument -- '%c'\n",
+                args->argv[0], c);
+        d->optopt = c;
+        if (d->optstring[0] == ':')
+            c = ':';
+        else
+            c = '?';
+    }
+    else
+        d->optarg = args->argv[d->optind++];
+    d->__nextchar = NULL;
+    return (c);
+}
+
+int __option_treat_shortoption_arguments(t_arguments *args, t_option_data *d, char *temp, char c)
+{
+    if (temp[2] == ':')
+        __option_treat_shortoption_arguments_optionnal(d);
+    else
+        c = __option_treat_shortoption_arguments_required(args, d, c);
+    return (c);
+}
+
+int __option_treat_shortoption_invalid(char **argv, t_option_data *d, char c)
+{
+    if (d->opterr)
+    {
+        ft_fdprint(2, "%s: invalid option -- '%c'\n", argv[0], c);
+    }
+    d->optopt = c;
+    return '?';
+}
+
+int __option_treat_shortoption(int argc, char **argv, t_option_data *d)
+{
+    char c;
+    char *temp;
+
+    c =  *d->__nextchar++;
+    temp = ft_strchr (d->optstring, c);
+    if (*d->__nextchar == '\0')
+        ++d->optind;
+    if (0 == temp || ':' == c || ';' == c)
+        return (__option_treat_shortoption_invalid(argv, d, c));
+    if (':' == temp[1])
+        c = __option_treat_shortoption_arguments(&(t_arguments){argc, argv}, d, temp, c);
+    return ((int)c);
 }
 
 /*-----------------------------------------------------------------*/
 
 int __option_r(int argc, char **argv, t_option_data *d, int *longind)
 {
-    int         ret;
-
-    ret = 0;
     __option_preparation(argv, d);
     if (-1 == __option_advance_to_next_argv_element(argc, argv, d))
         return (-1);
-    if (0 != __option_treat_longoption(argc, argv, d, &ret))
-        return (ret);
+    if (d->longopts != 0
+        && (argv[d->optind][1] == '-'
+        || (d->long_only && (argv[d->optind][2]
+            || !ft_strchr(d->optstring, argv[d->optind][1])))))
+        return (__option_treat_longoption(argc, argv, d));
+    return (__option_treat_shortoption(argc, argv, d));
 }
 
 int __option_getopt(t_arguments *args, t_option_arguments *options)
@@ -594,7 +765,8 @@ int __option_getopt(t_arguments *args, t_option_arguments *options)
     getopt_data.optstring = options->optstring;
     getopt_data.longopts = options->longopts;
     getopt_data.long_only = options->long_only;
-    
+    getopt_data.longind = options->longind;
+
     result = __option_r(
         args->argc, args->argv, &getopt_data, options->longind
     );
@@ -611,7 +783,101 @@ int option_getopt(t_arguments *args, const char *optstring)
     return (__option_getopt(args, &((t_option_arguments){optstring, 0, 0, 0})));
 }
 
-int option_getoptlong(t_arguments *args, t_option_arguments *options)
+int option_getopt_long(t_arguments *args, t_option_arguments *options)
 {
     return (__option_getopt(args, options));
+}
+
+static int verbose_flag;
+#include <stdio.h>
+
+
+int
+main (int argc, char **argv)
+{
+  int c;
+
+  while (1)
+    {
+      static t_option_info long_options[] =
+        {
+          /* These options set a flag. */
+          {"verbose", no_argument,       &verbose_flag, 1},
+          {"brief",   no_argument,       &verbose_flag, 0},
+          /* These options don’t set a flag.
+             We distinguish them by their indices. */
+          {"add",     no_argument,       0, 'a'},
+          {"append",  no_argument,       0, 'b'},
+          {"delete",  required_argument, 0, 'd'},
+          {"create",  required_argument, 0, 'c'},
+          {"file",    required_argument, 0, 'f'},
+          {0, 0, 0, 0}
+        };
+      /* getopt_long stores the option index here. */
+      int option_index = 0;
+
+      c = option_getopt_long (&(t_arguments){argc, argv}, 
+            &(t_option_arguments){"abc:d:f:", long_options, &option_index});
+
+      /* Detect the end of the options. */
+      if (c == -1)
+        break;
+
+      switch (c)
+        {
+        case 0:
+          /* If this option set a flag, do nothing else now. */
+          if (long_options[option_index].flag != 0)
+            break;
+          printf ("option %s", long_options[option_index].name);
+          if (optarg)
+            printf (" with arg %s", optarg);
+          printf ("\n");
+          break;
+
+        case 'a':
+          puts ("option -a\n");
+          break;
+
+        case 'b':
+          puts ("option -b\n");
+          break;
+
+        case 'c':
+          printf ("option -c with value `%s'\n", optarg);
+          break;
+
+        case 'd':
+          printf ("option -d with value `%s'\n", optarg);
+          break;
+
+        case 'f':
+          printf ("option -f with value `%s'\n", optarg);
+          break;
+
+        case '?':
+          /* getopt_long already printed an error message. */
+          break;
+
+        default:
+          abort ();
+        }
+    }
+
+  /* Instead of reporting ‘--verbose’
+     and ‘--brief’ as they are encountered,
+     we report the final status resulting from them. */
+  if (verbose_flag)
+    puts ("verbose flag is set");
+
+  /* Print any remaining command line arguments (not options). */
+  if (optind < argc)
+    {
+      printf ("non-option ARGV-elements: ");
+      while (optind < argc)
+        printf ("%s ", argv[optind++]);
+      putchar ('\n');
+    }
+
+  exit (0);
 }
