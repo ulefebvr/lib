@@ -6,5 +6,5 @@ char *string_add(char *str, char c)
 
     add[0] = c;
     add[1] = 0;
-    return (string_join(str, add));
+    return (string_cat(str, add));
 }

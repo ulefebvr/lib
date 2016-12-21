@@ -8,6 +8,6 @@ char				*string_new(char *str)
 		return 0;
 	string->str = 0;
 	string->len = 0;
-	string_join((char *)&string->str, str);
+	string_cat((char *)&string->str, str);
 	return ((char *)&string->str);
 }
