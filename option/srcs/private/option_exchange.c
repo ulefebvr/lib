@@ -7,7 +7,7 @@
 ** Exclude the moved bottom segment from further swapping.
 */
 
-void __option_exhange_swap_segment_bottom(char **argv, int bottom, int middle, int top)
+int __option_exhange_swap_segment_bottom(char **argv, int bottom, int middle, int top)
 {
     char *tem;
     int len;
@@ -22,6 +22,7 @@ void __option_exhange_swap_segment_bottom(char **argv, int bottom, int middle, i
         argv[top - (middle - bottom) + i] = tem;
     }
     top -= len;
+    return len;
 }
 
 /*
@@ -30,7 +31,7 @@ void __option_exhange_swap_segment_bottom(char **argv, int bottom, int middle, i
 ** Exclude the moved top segment from further swapping.
 */
 
-void __option_exhange_swap_segment_top(char **argv, int bottom, int middle, int top)
+int __option_exhange_swap_segment_top(char **argv, int bottom, int middle, int top)
 {
     char *tem;
     int len;
@@ -45,6 +46,7 @@ void __option_exhange_swap_segment_top(char **argv, int bottom, int middle, int 
         argv[middle + i] = tem;
     }
     bottom += len;
+    return len;
 }
 
 /*
@@ -71,11 +73,11 @@ void __option_exchange(char **argv, t_option_data *d)
     {
         if (top - middle > middle - bottom)
         {
-            __option_exhange_swap_segment_bottom(argv, bottom, middle, top);
+            top -= __option_exhange_swap_segment_bottom(argv, bottom, middle, top);
         }
         else
         {
-            __option_exhange_swap_segment_top(argv, bottom, middle, top);
+            bottom += __option_exhange_swap_segment_top(argv, bottom, middle, top);
         }
     }
     d->__first_nonopt += (d->optind - d->__last_nonopt);
