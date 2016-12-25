@@ -24,7 +24,7 @@ int __option_treat_longoption_arguments_required(t_arguments *args, t_treat_long
 int __option_treat_longoption_arguments_dont(t_arguments *args, t_treat_longoption *info, t_option_data *d)
 {
     if (info->pfound->has_arg)
-        d->optarg = info->nameend +1;
+        d->optarg = info->nameend + 1;
     else
     {
         if (d->opterr)

@@ -2,11 +2,11 @@
 #include "option_private.h"
 #include "option_tools.h"
 
-char                    *optarg;
-int                     opterr = 1;
-int                     optind = 1;
-int                     optopt = '?';
-static t_option_data    getopt_data;
+char                    *g_option_optarg;
+int                     g_option_opterr = 1;
+int                     g_option_optind = 1;
+int                     g_option_optopt = '?';
+static t_option_data    g_option_getopt_data;
 
 int __option_r(int argc, char **argv, t_option_data *d)
 {
@@ -25,21 +25,21 @@ int __option_getopt(t_arguments *args, t_option_arguments *options)
 {
     int result;
 
-    getopt_data.optind = optind;
-    getopt_data.opterr = opterr;
+    g_option_getopt_data.optind = g_option_optind;
+    g_option_getopt_data.opterr = g_option_opterr;
 
-    getopt_data.optstring = options->optstring;
-    getopt_data.longopts = options->longopts;
-    getopt_data.long_only = options->long_only;
-    getopt_data.longind = options->longind;
+    g_option_getopt_data.optstring = options->optstring;
+    g_option_getopt_data.longopts = options->longopts;
+    g_option_getopt_data.long_only = options->long_only;
+    g_option_getopt_data.longind = options->longind;
 
     result = __option_r(
-        args->argc, args->argv, &getopt_data
+        args->argc, args->argv, &g_option_getopt_data
     );
 
-    optind = getopt_data.optind;
-    optarg = getopt_data.optarg;
-    optopt = getopt_data.optopt;
+    g_option_optind = g_option_getopt_data.optind;
+    g_option_optarg = g_option_getopt_data.optarg;
+    g_option_optopt = g_option_getopt_data.optopt;
 
     return (result);
 }

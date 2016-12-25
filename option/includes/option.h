@@ -54,7 +54,7 @@ typedef struct          s_option_arguments
 ** Also, when `ordering' is RETURN_IN_ORDER,
 ** each non-option ARGV-element is returned here.
 */
-extern char                    *optarg;
+extern char                    *g_option_optarg;
 
 /*
 ** Index in ARGV of the next element to be scanned.
@@ -69,20 +69,20 @@ extern char                    *optarg;
 ** Otherwise, `optind' communicates from one call to the next
 ** how much of ARGV has been scanned so far.
 */
-extern int                     optind;
+extern int                     g_option_optind;
 
 /*
 ** Callers store zero here to inhibit the error message
 ** for unrecognized options.
 */
-extern int                     opterr;
+extern int                     g_option_opterr;
 
 /*
 ** Set to an option character which was unrecognized.
 ** This must be initialized on some systems to avoid linking in the
 ** system's own getopt implementation.
 */
-extern int                     optopt;
+extern int                     g_option_optopt;
 
 /*
 ** This version of getopt handle only the short option.
