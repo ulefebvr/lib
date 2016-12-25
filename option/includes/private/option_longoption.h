@@ -23,6 +23,6 @@ int __option_treat_longoption_arguments(t_arguments *args, t_treat_longoption *i
 int __option_treat_longoption_ambiguous(char **argv, t_treat_longoption *info, t_option_data *d);
 int __option_treat_longoption_unrecognized(char **argv, t_option_data *d);
 void __option_treat_longoption_test_match(t_treat_longoption *info, t_option_data *d);
-int __option_treat_longoption_get_namelen(t_option_data *d);
+int __option_treat_longoption_get_namelen(t_treat_longoption *info, t_option_data *d);
 
 #endif

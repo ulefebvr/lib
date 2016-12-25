@@ -22,14 +22,12 @@
 ** This distinction seems to be the most useful approach.
 */
 
-int __option_treat_longoption_get_namelen(t_option_data *d)
+int __option_treat_longoption_get_namelen(t_treat_longoption *info, t_option_data *d)
 {
-    char *nameend;
-
-    nameend = d->__nextchar;
-    while (nameend && *nameend && '=' != *nameend)
-        ++nameend;
-    return (nameend - d->__nextchar);
+    info->nameend = d->__nextchar;
+    while (info->nameend && *info->nameend && '=' != *info->nameend)
+        ++info->nameend;
+    return (info->nameend - d->__nextchar);
 }
 
 void __option_treat_longoption_test_match_exact_match(t_treat_longoption *info)

@@ -8,7 +8,7 @@ int __option_treat_longoption(int argc, char **argv, t_option_data *d)
     t_treat_longoption info;
 
     info = (t_treat_longoption){0, 0, 0, 0, 0, 0, 0, 0};
-    info.namelen = __option_treat_longoption_get_namelen(d);
+    info.namelen = __option_treat_longoption_get_namelen(&info, d);
     __option_treat_longoption_test_match(&info, d);
     if (info.ambig_list != 0 && !info.exact)
         return (__option_treat_longoption_ambiguous(argv, &info, d));
