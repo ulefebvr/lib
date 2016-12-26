@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   option_advance_to_next_argv_element.c              :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ulefebvr <ulefebvr@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2016/12/26 18:51:29 by ulefebvr          #+#    #+#             */
+/*   Updated: 2016/12/26 18:51:30 by ulefebvr         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "option.h"
 #include "option_private.h"
 #include "option_tools.h"
@@ -18,7 +30,7 @@ void __option_check_nonopt_values(t_option_data *d)
 /*
 ** If we have just processed some options following some non-options,
 ** exchange them so that the options come first.
-** 
+**
 ** Skip any additional non-options
 ** and extend the range of non-options previously skipped.
 */

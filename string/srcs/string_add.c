@@ -1,10 +1,22 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   string_add.c                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ulefebvr <ulefebvr@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2016/12/26 18:55:24 by ulefebvr          #+#    #+#             */
+/*   Updated: 2016/12/26 18:57:10 by ulefebvr         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "string.h"
 
-char *string_add(char *str, char c)
+char	*string_add(char *str, char c)
 {
-    char    add[2];
+	char	add[2];
 
-    add[0] = c;
-    add[1] = 0;
-    return (string_cat(str, add));
+	add[0] = c;
+	add[1] = 0;
+	return (string_cat(str, add));
 }

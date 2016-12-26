@@ -1,8 +1,20 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   string_del.c                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ulefebvr <ulefebvr@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2016/12/26 18:55:20 by ulefebvr          #+#    #+#             */
+/*   Updated: 2016/12/26 18:56:45 by ulefebvr         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "string.h"
 
-char *string_del(char *str)
+char	*string_del(char *str)
 {
-    free(STRING(str)->str);
-    free(STRING(str));
-    return (0);
+	free(STRING(str)->str);
+	free(STRING(str));
+	return (0);
 }

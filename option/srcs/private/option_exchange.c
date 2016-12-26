@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   option_exchange.c                                  :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ulefebvr <ulefebvr@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2016/12/26 18:51:27 by ulefebvr          #+#    #+#             */
+/*   Updated: 2016/12/26 18:51:27 by ulefebvr         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "option.h"
 #include "option_private.h"
 
@@ -55,7 +67,7 @@ int __option_exhange_swap_segment_top(char **argv, int bottom, int middle, int t
 ** which contains all the non-options that have been skipped so far.
 ** The other is elements [last_nonopt,optind), which contains all
 ** the options processed since those non-options were skipped.
-** 
+**
 ** `first_nonopt' and `last_nonopt' are relocated so that they describe
 ** the new indices of the non-options in ARGV after they are moved.
 */

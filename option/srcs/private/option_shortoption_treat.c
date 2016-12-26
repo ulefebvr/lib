@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   option_shortoption_treat.c                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ulefebvr <ulefebvr@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2016/12/26 18:51:06 by ulefebvr          #+#    #+#             */
+/*   Updated: 2016/12/26 18:51:07 by ulefebvr         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "option.h"
 #include "option_private.h"
 #include "option_tools.h"
@@ -19,11 +31,11 @@ void __option_treat_shortoption_arguments_optionnal(t_option_data *d)
 }
 
 /*
-** This is an option that requires an argument.  
+** This is an option that requires an argument.
 ** If we end this ARGV-element by taking the rest as an arg,
-** we must advance to the next element now.  
+** we must advance to the next element now.
 ** We already incremented `optind' once;
-** increment it again when taking next ARGV-elt as argument.  
+** increment it again when taking next ARGV-elt as argument.
 */
 
 int __option_treat_shortoption_arguments_required(t_arguments *args, t_option_data *d, char c)

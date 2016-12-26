@@ -1,3 +1,15 @@
+# **************************************************************************** #
+#                                                                              #
+#                                                         :::      ::::::::    #
+#    Makefile                                           :+:      :+:    :+:    #
+#                                                     +:+ +:+         +:+      #
+#    By: ulefebvr <ulefebvr@student.42.fr>          +#+  +:+       +#+         #
+#                                                 +#+#+#+#+#+   +#+            #
+#    Created: 2016/12/26 18:55:05 by ulefebvr          #+#    #+#              #
+#    Updated: 2016/12/26 18:55:11 by ulefebvr         ###   ########.fr        #
+#                                                                              #
+# **************************************************************************** #
+
 TARGET_EXEC ?= libstring.a
 
 BUILD_DIR ?= ./build
@@ -13,9 +25,9 @@ INC_FLAGS := $(addprefix -I,$(INC_DIRS))
 
 CPPFLAGS ?= $(INC_FLAGS) -MMD -MP -Wall -Werror -Wextra
 
-# Extra flags to give to compilers when they are supposed to invoke the linker, ‘ld’, such as -L. 
+# Extra flags to give to compilers when they are supposed to invoke the linker, ‘ld’, such as -L.
 # Libraries (-lfoo) should be added to the LDLIBS variable instead.
-# LDFLAGS ?= 
+# LDFLAGS ?=
 
 all: $(TARGET_EXEC) $(OBJS)
 

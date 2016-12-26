@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   option_longoption_test_match.c                     :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ulefebvr <ulefebvr@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2016/12/26 18:51:17 by ulefebvr          #+#    #+#             */
+/*   Updated: 2016/12/26 18:51:17 by ulefebvr         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "option.h"
 #include "option_private.h"
 #include "option_longoption.h"
@@ -7,18 +19,18 @@
 
 /*
 ** Decode the current option-ARGV-element.
-** 
+**
 ** Check whether the ARGV-element is a long option.
-** 
+**
 ** If long_only and the ARGV-element has the form "-f", where f is
 ** a valid short option, don't consider it an abbreviated form of
 ** a long option that starts with f.  Otherwise there would be no
 ** way to give the -f short option.
-** 
+**
 ** On the other hand, if there's a long option "fubar" and
 ** the ARGV-element is "-fu", do consider that an abbreviation of
 ** the long option, just like "--fu", and not "-f" with arg "u".
-** 
+**
 ** This distinction seems to be the most useful approach.
 */
 

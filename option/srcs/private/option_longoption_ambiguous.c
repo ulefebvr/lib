@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   option_longoption_ambiguous.c                      :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ulefebvr <ulefebvr@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2016/12/26 18:51:22 by ulefebvr          #+#    #+#             */
+/*   Updated: 2016/12/26 18:51:22 by ulefebvr         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "option.h"
 #include "option_private.h"
 #include "option_longoption.h"
@@ -11,7 +23,7 @@ int __option_treat_longoption_ambiguous(char **argv, t_treat_longoption *info, t
 
     if (d->opterr)
     {
-        ft_fdprint(2, "%s: option '%s' is ambiguous; possibilities: '--%s'", 
+        ft_fdprint(2, "%s: option '%s' is ambiguous; possibilities: '--%s'",
             argv[0], argv[d->optind], info->pfound->name);
         while (info->ambig_list != 0)
         {
