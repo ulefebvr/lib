@@ -43,6 +43,6 @@ int __option_advance_to_next_argv_element(int argc, char **argv, t_option_data *
 int __option_treat_longoption(int argc, char **argv, t_option_data *d);
 int __option_treat_shortoption(int argc, char **argv, t_option_data *d);
 
-int __option_getopt(t_arguments *args, t_option_arguments *options);
+int __option_getopt(t_arguments *args, t_option_arguments *options, int longonly);
 
 #endif

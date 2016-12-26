@@ -40,7 +40,6 @@ typedef struct          s_option_arguments
     const char          *optstring;
     t_option_info       *longopts;
     int                 *longind;
-    int                 long_only;
 }                       t_option_arguments;
 
 # define no_argument		0

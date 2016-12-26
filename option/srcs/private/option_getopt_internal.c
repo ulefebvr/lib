@@ -21,7 +21,7 @@ int __option_r(int argc, char **argv, t_option_data *d)
     return (__option_treat_shortoption(argc, argv, d));
 }
 
-int __option_getopt(t_arguments *args, t_option_arguments *options)
+int __option_getopt(t_arguments *args, t_option_arguments *options, int longonly)
 {
     int result;
 
@@ -30,7 +30,7 @@ int __option_getopt(t_arguments *args, t_option_arguments *options)
 
     g_option_getopt_data.optstring = options->optstring;
     g_option_getopt_data.longopts = options->longopts;
-    g_option_getopt_data.long_only = options->long_only;
+    g_option_getopt_data.long_only = longonly;
     g_option_getopt_data.longind = options->longind;
 
     result = __option_r(
